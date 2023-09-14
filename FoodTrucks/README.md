@@ -1,0 +1,2 @@
+# FoodTrucks
+Sample Application
