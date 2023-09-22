@@ -21,4 +21,5 @@ Concept Covered:
 	•	Singleton Pattern
 	•	Component Pattern
 
+6) Freamwork used: UiKIt, CoreLocation, CoreService and MAPKit
 
