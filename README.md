@@ -14,8 +14,10 @@ Concept Covered:
 4) XC unit test
    
 5) XC UI test
+6) Automated Test Results
+   ![Image](https://github.com/user-attachments/assets/026f69a0-c784-4b66-8b17-ccb880296af5)
    
-6) Pattern used:
+8) Pattern used:
 	•	Builder Pattern - building http request object
 	•	Strategy Pattern - API/CXS network strategy 
 	•	Singleton Pattern
