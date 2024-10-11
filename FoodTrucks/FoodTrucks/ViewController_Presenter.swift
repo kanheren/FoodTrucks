@@ -22,10 +22,9 @@ class ViewController_Presenter: ViewController_PresenterProtocol {
     
     func fatchFoodTrucksData() {
         let foodTruckRequest = FoodTruck.Request()
-        AppEnvironment.current.foodTruckUserCase.fatchFoodTruckRequest(request: foodTruckRequest,
-                                                                       completion: { result in
+        
+        AppEnvironment.current.foodTruckUserCase.fatchFoodTruckRequest(request: foodTruckRequest, completion: { result in
             switch result {
-
             case let .Success(successObject):
                 print("Food Truck success object")
                 self.viewController?.foodTruckResponse(foodTruckResponse: successObject)

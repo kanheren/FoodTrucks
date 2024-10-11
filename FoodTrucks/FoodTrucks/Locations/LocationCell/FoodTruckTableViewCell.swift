@@ -12,8 +12,7 @@ class FoodTruckTableViewCell: UITableViewCell {
     @IBOutlet weak var applicantLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var hoursLabel: UILabel!
-    //@IBOutlet weak var optionalTextLabel: UILabel!
-    @IBOutlet weak var optionalTextLabel: UITextView!
+    @IBOutlet weak var optionalTextLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

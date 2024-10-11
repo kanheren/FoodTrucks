@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class MapViewController: UIViewController {
+class MapViewController: BaseViewController {
 
     var FoodTrucks = [FoodTruckModel]()
     
@@ -24,21 +24,26 @@ class MapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        mapView.delegate = self
+        
+        // Show artwork on map
+        updateMapData()
+        
         // Set Title
         title = NSLocalizedString("Food Truck", comment: "MapViewController: Set screen header title")
-        //Hide back button
-        navigationItem.setHidesBackButton(true, animated: true)
+        
+        setUpNavigationBar()
+        setBackgroundImage_Gradient_Light(view: self.view)
+        
         //Show Map button
         createNavigationBarButton()
         
-        //Configure Location Service"
-        configureLocationServices()
         // Set initial location in San Francisco
         let initialLocation = CLLocation(latitude: 37.773972, longitude: -122.431297)
         mapView.centerToLocation(initialLocation)
-        // Show artwork on map
-        updateMapData()
+        
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -58,11 +63,12 @@ class MapViewController: UIViewController {
         for foodTruck in FoodTrucks {
             let latitude = (foodTruck.latitude as NSString).doubleValue
             let longitude = (foodTruck.longitude as NSString).doubleValue
-            let foodTruckAnnotation = FoodTruckAnnotation(title: "",
-                                                          locationName: "",
-                                                          discipline: "?",
-                                                          foodTruck: foodTruck,
-                                                          coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            let foodTruckAnnotation = FoodTruckAnnotation(title: foodTruck.applicant, 
+                                                          subtitle: foodTruck.applicant,
+                                                          coordinate: CLLocationCoordinate2D(latitude: latitude, 
+                                                                                             longitude: longitude),
+                                                          locationName: foodTruck.location,
+                                                          foodTruck: foodTruck)
             foodTruckAnnotations.append(foodTruckAnnotation)
         }
         mapView.addAnnotations(foodTruckAnnotations)
@@ -97,17 +103,26 @@ class MapViewController: UIViewController {
     // Location Service autorization
     private func configureLocationServices() {
         locationManager.delegate = self
-        mapView.delegate = self
-        let status = CLLocationManager.authorizationStatus()
-        if status == .notDetermined {
+        //mapView.delegate = self
+        
+        switch locationManager.authorizationStatus {
+        case .restricted, .denied:
             locationManager.requestAlwaysAuthorization()
-        } else if status == .authorizedAlways || status == .authorizedWhenInUse {
+        case .authorizedAlways, .authorizedWhenInUse:
             beginLocationUpdates(locationManager: locationManager)
+        default:
+            print("Need Location Authorization")
         }
     }
     
     private func beginLocationUpdates(locationManager: CLLocationManager) {
         mapView.showsUserLocation = true
+        mapView.mapType = MKMapType.standard
+        mapView.showsTraffic = true
+        mapView.showAnnotations(mapView.annotations, animated: true)
+        mapView.register(MKMarkerAnnotationView.self, 
+                         forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
+        
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
     }
@@ -142,18 +157,19 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("Pin selected");
         if let pin = view.annotation as? FoodTruckAnnotation {
-            let frame = CGRect(x: 0, y: mapView.frame.height - 125, width: mapView.frame.width, height: 125)
+            let frame = CGRect(x: 0, y: mapView.frame.height - 130, width: mapView.frame.width, height: 130)
 
             if detailsView != nil {
                 detailsView?.removeFromSuperview()
             }
 
-            if let detailsView = Bundle.main.loadNibNamed("FoodTruckTableViewCell", owner: self, options: nil)?.first as? FoodTruckTableViewCell {
+            if let detailsView = Bundle.main.loadNibNamed("FoodTruckTableViewCell", 
+                                                          owner: self,
+                                                          options: nil)?.first as? FoodTruckTableViewCell {
                 self.detailsView = detailsView
                 mapView.addSubview(detailsView)
                 detailsView.frame = frame
                 detailsView.backgroundColor = .white
-                detailsView.accessibilityElements = []
                 updateDetailsView(pin, detailsView)
             }
         }

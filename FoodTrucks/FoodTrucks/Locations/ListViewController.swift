@@ -8,20 +8,23 @@
 import Foundation
 import UIKit
 
-class ListViewController: UIViewController {
+class ListViewController: BaseViewController {
     
     // Create inital food truc data
     var FoodTrucks = [FoodTruckModel]()
     
     @IBOutlet weak var FoodTruckTableView: UITableView!
+    @IBOutlet weak var screenTitle: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
     
         // Set Title
-        title = NSLocalizedString("Food Truck", comment: "ListViewController: Set screen header title")
-        // Hide back button
-        navigationItem.setHidesBackButton(true, animated: true)
+        screenTitle.text = "Food Truck"
+        
+        setUpNavigationBar()
+        setBackgroundImage_Gradient_Light(view: self.view)
+        
         // Show Map button
         createNavigationBarButton()
         // configure TableView
@@ -57,6 +60,12 @@ class ListViewController: UIViewController {
                 vc.FoodTrucks = FoodTrucks
             }
             self.navigationController?.show(vc, sender: nil)
+        }
+    }
+    
+    @IBAction func backButtonTap(_ sender: Any) {
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
         }
     }
 }

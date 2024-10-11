@@ -9,29 +9,26 @@ import Foundation
 import MapKit
 
 class FoodTruckAnnotation: NSObject, MKAnnotation {
-    let title: String?
-    let locationName: String?
-    let discipline: String?
-    let foodTruck: FoodTruckModel?
-    let coordinate: CLLocationCoordinate2D
+    var title: String?
+    var subtitle: String?
+    var coordinate: CLLocationCoordinate2D
     
-    init(
-        title: String?,
+    let locationName: String?
+    let foodTruck: FoodTruckModel?
+    
+    init(title: String?,
+        subtitle: String?,
+        coordinate: CLLocationCoordinate2D,
         locationName: String?,
-        discipline: String?,
-        foodTruck: FoodTruckModel?,
-        coordinate: CLLocationCoordinate2D
+        foodTruck: FoodTruckModel?
     ) {
         self.title = title
-        self.locationName = locationName
-        self.discipline = discipline
-        self.foodTruck = foodTruck
+        self.subtitle = subtitle
         self.coordinate = coordinate
         
+        self.locationName = locationName
+        self.foodTruck = foodTruck
+       
         super.init()
-    }
-    
-    var subtitle: String? {
-        return foodTruck?.applicant
     }
 }

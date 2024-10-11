@@ -12,7 +12,7 @@ protocol ViewController_ViewControllerProtocol: AnyObject {
     func foodTruckResponse(foodTruckResponse: [FoodTruck.Response])
 }
 
-class ViewController: UIViewController, ViewController_ViewControllerProtocol {
+class ViewController: BaseViewController, ViewController_ViewControllerProtocol {
     var foodTruckArray = [FoodTruck.Response]()
     var presenter: ViewController_PresenterProtocol?
 
@@ -20,6 +20,10 @@ class ViewController: UIViewController, ViewController_ViewControllerProtocol {
         super.viewDidLoad()
         presenter = ViewController_Presenter(self)
         presenter?.fatchFoodTrucksData()
+        
+        setUpNavigationBar()
+        setBackgroundImage_Gradient_Light(view: self.view)
+        
         //fatchFoodTrucksData()
     }
     func foodTruckResponse(foodTruckResponse: [FoodTruck.Response]) {
@@ -99,8 +103,11 @@ class ViewController: UIViewController, ViewController_ViewControllerProtocol {
     
     @IBAction func onLocationTapped(_ sender: Any) {
         print("User selected: onLocationTapped")
-        if CLLocationManager.locationServicesEnabled() == false ||
-            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.denied {
+        
+        let locationManager = CLLocationManager()
+        
+        switch locationManager.authorizationStatus {
+        case .restricted, .denied:
             let alert = UIAlertController(title: "Location Request", message: nil, preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "Location Request", style: UIAlertAction.Style.default, handler: { _ in
                 // launch Food Truck app settings
@@ -115,8 +122,10 @@ class ViewController: UIViewController, ViewController_ViewControllerProtocol {
             }))
 
             present(alert, animated: true, completion: nil)
-        } else {
+        case .authorizedAlways, .authorizedWhenInUse:
             launchLocationListView()
+        default:
+            print("Need Location Authorization")
         }
     }
     
